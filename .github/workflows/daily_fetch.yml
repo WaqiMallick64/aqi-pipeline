@@ -1,0 +1,32 @@
+name: Daily Data Fetch
+
+on:
+  schedule:
+    # Runs every day at 16:00 UTC (9 PM Pakistan time)
+    - cron: "0 16 * * *"
+  workflow_dispatch: # Allow manual trigger too
+
+jobs:
+  run-daily-fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install requests pandas numpy pymongo python-dotenv
+
+      - name: Run data fetch script
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          TEST_COLLECTTION_NAME: ${{ secrets.TEST_COLLECTION_NAME }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          python fetch_data.py
