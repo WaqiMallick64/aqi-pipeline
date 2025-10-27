@@ -17,6 +17,9 @@ db_name = os.getenv("DB_NAME")
 db = client[db_name]
 collection_name = os.getenv("TEST_COLLECTION_NAME")
 
+if not collection_name:
+    raise ValueError("❌ TEST_COLLECTION_NAME not found in environment variables")
+
 # Ensure collection exists
 if collection_name not in db.list_collection_names():
     db.create_collection(collection_name)

@@ -26,7 +26,7 @@ jobs:
       - name: Run data fetch script
         env:
           MONGO_URI: ${{ secrets.MONGO_URI }}
-          TEST_COLLECTTION_NAME: ${{ secrets.TEST_COLLECTION_NAME }}
+          TEST_COLLECTION_NAME: ${{ secrets.TEST_COLLECTION_NAME }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           python src/fetch_data.py
