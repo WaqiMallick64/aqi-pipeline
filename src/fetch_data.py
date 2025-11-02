@@ -55,8 +55,18 @@ def fetch_data_for_today():
     )
 
     # Fetch data
-    wresp = requests.get(weather_url).json()
-    aresp = requests.get(air_url).json()
+    try:
+        wresp = requests.get(weather_url, timeout=10)
+        wresp.raise_for_status()  # raises an HTTPError if response code != 200
+        wresp = wresp.json()
+
+        aresp = requests.get(air_url, timeout=10)
+        aresp.raise_for_status()
+        aresp = aresp.json()
+
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error fetching data from API: {e}")
+        return pd.DataFrame()
 
     # Validate responses
     if "hourly" not in wresp or "hourly" not in aresp:
@@ -81,4 +91,4 @@ if __name__ == "__main__":
     df = fetch_data_for_today()
     processed = preprocess_features(df)
     print(processed.head())
-    #save_to_mongodb(processed,collection_name,collection)
+    save_to_mongodb(processed,collection_name,collection)

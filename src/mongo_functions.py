@@ -76,24 +76,19 @@ def store_features(df: pd.DataFrame,COLLECTION_NAME):
     client.close()
 
 
-def get_features(DB_NAME,COLLECTION_NAME, start_date=None, end_date=None ):
+def get_features(DB_NAME,COLLECTION_NAME,MONGO_URI):
     """
     Fetch feature data from MongoDB between specific dates.
     If no range is given, return all.
     """
-    client = get_mongo_client()
+    client = MongoClient(MONGO_URI)
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
 
-    query = {}
-    if start_date and end_date:
-        query = {"time": {"$gte": start_date, "$lte": end_date}}
+    data = list(collection.find())  
 
-    cursor = collection.find(query)
-    df = pd.DataFrame(list(cursor))
-
-    if not df.empty:
-        df.drop("_id", axis=1, inplace=True)
+    # Convert to pandas DataFrame
+    df = pd.DataFrame(data)
 
     client.close()
     print(f"📤 Retrieved {len(df)} records from MongoDB")

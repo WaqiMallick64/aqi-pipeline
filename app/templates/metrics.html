@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Performance Metrics</title>
+    <!-- Google Fonts for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (minimal JS-free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%); /* Sky blue to mint green gradient */
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        nav h1 {
+            font-size: 1.5rem;
+            color: #4682B4; /* Steel blue */
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 2rem;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: #32CD32; /* Lime green */
+        }
+
+        /* Title Section */
+        .title-section {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+        .title-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .title-section p {
+            font-size: 1.2rem;
+            color: #f0f8ff; /* Alice blue */
+        }
+
+        /* Metrics Section */
+        .metrics {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            justify-items: center;
+        }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: slideUp 0.8s ease-out;
+            border-left: 5px solid #32CD32; /* Default green */
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+        .metric-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4682B4;
+        }
+        .metric-card p {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        /* Color-coding based on R² */
+        .metric-card.good {
+            border-left-color: #32CD32; /* Green for R² > 0.85 */
+        }
+        .metric-card.moderate {
+            border-left-color: #FFD700; /* Yellow for 0.70–0.85 */
+        }
+        .metric-card.poor {
+            border-left-color: #FFA500; /* Orange for below 0.70 */
+        }
+        .no-data {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #666;
+            padding: 4rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Floating Clouds Animation (subtle) */
+        .cloud {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.3);
+            animation: float 10s ease-in-out infinite;
+        }
+        .cloud:nth-child(2) {
+            top: 60%;
+            left: 70%;
+            animation-delay: 5s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav .container {
+                flex-direction: column;
+            }
+            nav ul {
+                margin-top: 1rem;
+            }
+            nav ul li {
+                margin-left: 1rem;
+            }
+            .title-section h1 {
+                font-size: 2rem;
+            }
+            .title-section p {
+                font-size: 1rem;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Clouds for Atmosphere -->
+    <div class="cloud">☁️</div>
+    <div class="cloud">☁️</div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="container">
+            <h1>🌍 AQI System</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('predict') }}">Forecast Prediction</a></li>
+                <li><a href="{{ url_for('metrics') }}">Model Metrics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Title Section -->
+    <section class="title-section">
+        <h1>📊 Model Performance Metrics</h1>
+        <p>Evaluation results of all trained AQI prediction models.</p>
+    </section>
+
+    <!-- Metrics Section -->
+    <section class="metrics">
+        {% if metrics %}
+        <div class="metrics-grid">
+            {% for model, data in metrics.items() %}
+            <div class="metric-card {% if data.R2 > 0.85 %}good{% elif data.R2 > 0.7 %}moderate{% else %}poor{% endif %}">
+                <h2>{{ model }}</h2>
+                <p>🎯 MAE: {{ data.MAE | round(2) }}</p>
+                <p>⚙️ RMSE: {{ data.RMSE | round(2) }}</p>
+                <p>📈 R²: {{ data.R2 | round(3) }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-data">
+            ⚠️ No metrics available at the moment. Please train a model first.
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Developed by Muhammad Waqi Mallick 🌤</p>
+    </footer>
+
+    <!-- Minimal JavaScript for Smooth Scrolling (Optional Enhancement) -->
+    <script>
+        // Smooth scroll for anchor links (if needed in future)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

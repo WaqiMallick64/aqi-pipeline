@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQI Forecasting and Analysis System</title>
+    <!-- Google Fonts for clean typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (minimal JS-free icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%); /* Sky blue to mint green gradient */
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        nav h1 {
+            font-size: 1.5rem;
+            color: #4682B4; /* Steel blue */
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 2rem;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        nav ul li a:hover {
+            color: #32CD32; /* Lime green */
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.1)"/><circle cx="30" cy="30" r="20" fill="rgba(255,255,255,0.05)"/></svg>') no-repeat center;
+            background-size: cover;
+            animation: fadeIn 1s ease-in;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #f0f8ff; /* Alice blue */
+        }
+        .hero .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #32CD32;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: background 0.3s, transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .hero .btn:hover {
+            background: #228B22;
+            transform: translateY(-2px);
+        }
+
+        /* Overview Section */
+        .overview {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .overview h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #4682B4;
+        }
+        .overview p {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            color: #555;
+        }
+        .cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 2rem;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: slideUp 0.8s ease-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+        .card i {
+            font-size: 3rem;
+            color: #32CD32;
+            margin-bottom: 1rem;
+        }
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #4682B4;
+        }
+        .card p {
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+        footer p {
+            margin-bottom: 1rem;
+        }
+        footer a {
+            color: #32CD32;
+            text-decoration: none;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+        footer a:hover {
+            color: #98FB98;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Floating Clouds Animation (subtle) */
+        .cloud {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.3);
+            animation: float 10s ease-in-out infinite;
+        }
+        .cloud:nth-child(2) {
+            top: 60%;
+            left: 70%;
+            animation-delay: 5s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav .container {
+                flex-direction: column;
+            }
+            nav ul {
+                margin-top: 1rem;
+            }
+            nav ul li {
+                margin-left: 1rem;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Clouds for Atmosphere -->
+    <div class="cloud">☁️</div>
+    <div class="cloud">☁️</div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="container">
+            <h1>🌍 AQI System</h1>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('predict') }}">Forecast Prediction</a></li>
+                <li><a href="{{ url_for('metrics') }}">Model Metrics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>🌍 AQI Forecasting and Analysis System</h1>
+        <p>Predicting the next 3 days of air quality using machine learning and weather data.</p>
+        <a href="{{ url_for('predict') }}" class="btn">Get Started</a>
+    </section>
+
+    <!-- Project Overview Section -->
+    <section class="overview">
+        <h2>Project Overview</h2>
+        <p>The Air Quality Index (AQI) is a measure of how polluted the air is and what associated health effects might be a concern for the general public. Monitoring AQI is crucial for public health, environmental protection, and informed decision-making. Our system leverages machine learning to forecast AQI based on weather and pollution data.</p>
+        <div class="cards">
+            <div class="card">
+                <i class="fas fa-database"></i>
+                <h3>Data Source</h3>
+                <p>Utilizes real-time weather and pollution data from reliable APIs to train and predict AQI levels.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-brain"></i>
+                <h3>Machine Learning</h3>
+                <p>Employs trained regression models to analyze patterns and provide accurate AQI predictions.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Forecast Insights</h3>
+                <p>Delivers next 3-day AQI forecasts with insights to help users plan and stay healthy.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Developed by Muhammad Waqi Mallick</p>
+        <a href="#" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+        <a href="#" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+    </footer>
+
+    <!-- Minimal JavaScript for Smooth Scrolling (Optional Enhancement) -->
+    <script>
+        // Smooth scroll for anchor links (if needed in future)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
