@@ -24,7 +24,7 @@ This project demonstrates a **complete MLOps-style workflow** — integrating da
 
 ### Clone the Repository
 
-git clone https://github.com/yourusername/aqi-pipeline.git
+git clone https://github.com/WaqiMallick64/aqi-pipeline.git
 cd aqi-pipeline
 
 ### Create a Virtual Environment
@@ -42,4 +42,16 @@ Create a .env file in the root directory:
 MONGO_URI=<your_mongo_connection_string>
 DB_NAME=<your_database_name>
 COLLECTION_NAME=<your_collection_name>
+
+### How to Run
+
+-If you want to run it manually then first run the fetch_data.py which will fetch today's data.
+Note: in my case I already fetched 1 year historical data so that I can have enough sample to work with
+
+-Then run the train_model.py script which will preprocess and train the model
+-Then run the predict.py to get the predictions
+-A folder will called artifacts will be made which will store the pkl,json,and csvs
+
+### Run the Flask app
+Type the command: "python -m app.app" in cmd/powershell to run the Flask app.
 
