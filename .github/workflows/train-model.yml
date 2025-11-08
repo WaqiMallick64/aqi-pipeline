@@ -1,0 +1,32 @@
+name: Daily Model Training
+
+on:
+  schedule:
+    # Runs every day at 17:00 UTC (10 PM Pakistan time)
+    - cron: "0 17 * * *"
+  workflow_dispatch: # Allow manual trigger as well
+
+jobs:
+  run-daily-training:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt || pip install pandas numpy scikit-learn joblib pymongo python-dotenv
+
+      - name: Run model training script
+        env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          MODEL_COLLECTION: ${{ secrets.MODEL_COLLECTION }}
+        run: |
+          python src/train_model.py

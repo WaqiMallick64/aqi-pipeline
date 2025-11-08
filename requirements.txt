@@ -1,0 +1,9 @@
+pandas
+numpy
+pymongo
+scikit-learn
+Flask
+jinja2
+python-dotenv
+requests
+matplotlib

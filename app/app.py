@@ -4,7 +4,7 @@ from src.predict import forecast_and_predict  # You’ll wrap your logic into a 
 import os
 import json
 from flask import render_template
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -22,11 +22,15 @@ def predict():
         avg_aqi = results.groupby("day")["predicted_aqi"].mean().reset_index()
         avg_aqi = avg_aqi.rename(columns={"day": "date", "predicted_aqi": "avg_aqi"})
 
+        # Convert day numbers to full future dates
+        today = datetime.now()
+        avg_aqi["date"] = avg_aqi["date"].apply(lambda d: (today + timedelta(days=int(d))).strftime("%B %d, %Y"))
+
         # Convert to dictionary for Jinja2
         forecast_data = avg_aqi.to_dict(orient='records')
 
         # Current date for display
-        current_date = datetime.now().strftime("%B %d, %Y")
+        current_date = today.strftime("%B %d, %Y")
 
         return render_template(
             'predict.html',
